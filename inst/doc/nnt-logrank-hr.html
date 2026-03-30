@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>NNT/NNH Calculator &amp; Log-rank to Hazard Ratio</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">NNT/NNH Calculator &amp; Log-rank to Hazard
+Ratio</h1>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Systematic reviews frequently encounter trials that report incomplete
+survival data – a log-rank p-value but no Hazard Ratio, or probabilities
+without a directly computed NNT. ParCC bridges these gaps with two tools
+in the <strong>HR Converter</strong> module.</p>
+</div>
+<div id="tutorial-a-extracting-a-hazard-ratio-from-a-log-rank-test" class="section level2">
+<h2>Tutorial A: Extracting a Hazard Ratio from a Log-rank Test</h2>
+<div id="the-scenario-adjuvant-chemotherapy-in-colon-cancer" class="section level3">
+<h3>The Scenario – Adjuvant Chemotherapy in Colon Cancer</h3>
+<p>An older trial (published 2005) reports:</p>
+<ul>
+<li>Log-rank chi-squared = <strong>6.8</strong></li>
+<li>Total events (deaths) across both arms = <strong>142</strong></li>
+<li>The treatment arm had better outcomes</li>
+</ul>
+<p>The paper does not report a Hazard Ratio, which you need for your
+meta-analysis.</p>
+</div>
+<div id="the-peto-approximation" class="section level3">
+<h3>The Peto Approximation</h3>
+<p>When only summary log-rank statistics are available, the Peto method
+estimates:</p>
+<p><span class="math display">\[\ln(HR) = \pm
+\frac{\sqrt{\chi^2}}{\sqrt{E/4}}\]</span></p>
+<p>with a 95% confidence interval:</p>
+<p><span class="math display">\[\ln(HR) \pm
+\frac{1.96}{\sqrt{E/4}}\]</span></p>
+<p>where <span class="math inline">\(E\)</span> is the total number of
+events.</p>
+</div>
+<div id="in-parcc" class="section level3">
+<h3>In ParCC</h3>
+<ol style="list-style-type: decimal">
+<li>Navigate to <strong>Convert &gt; HR -&gt; Probability &amp; NNT &gt;
+Log-rank -&gt; HR</strong> tab.</li>
+<li>Select input type: <strong>Chi-squared statistic</strong>.</li>
+<li>Enter chi-squared = <strong>6.8</strong>, Total events =
+<strong>142</strong>.</li>
+<li>Select direction: <strong>Treatment is better</strong> (HR &lt;
+1).</li>
+<li>Result: <strong>HR = 0.68</strong> (95% CI: 0.51 - 0.91).</li>
+</ol>
+</div>
+<div id="alternative-from-a-p-value" class="section level3">
+<h3>Alternative: From a p-value</h3>
+<p>If the paper reports only “log-rank p = 0.009”:</p>
+<ol style="list-style-type: decimal">
+<li>Select input type: <strong>p-value</strong>.</li>
+<li>Enter p = <strong>0.009</strong>, Total events =
+<strong>142</strong>.</li>
+<li>ParCC converts the p-value to a z-statistic via <span class="math inline">\(z = \Phi^{-1}(1 - p/2)\)</span>, then applies the
+same Peto formula.</li>
+</ol>
+</div>
+</div>
+<div id="tutorial-b-computing-nnt-for-a-formulary-decision" class="section level2">
+<h2>Tutorial B: Computing NNT for a Formulary Decision</h2>
+<div id="the-scenario-hospital-pt-committee" class="section level3">
+<h3>The Scenario – Hospital P&amp;T Committee</h3>
+<p>A Pharmacy &amp; Therapeutics committee asks: “How many patients must
+we treat with Drug X to prevent one additional death?” The trial
+reports:</p>
+<ul>
+<li>12-month mortality: Control = <strong>18%</strong>, Intervention =
+<strong>12%</strong></li>
+</ul>
+</div>
+<div id="the-formula" class="section level3">
+<h3>The Formula</h3>
+<p><span class="math display">\[NNT = \left\lceil \frac{1}{ARR}
+\right\rceil = \left\lceil \frac{1}{p_{control} - p_{intervention}}
+\right\rceil\]</span></p>
+</div>
+<div id="in-parcc-1" class="section level3">
+<h3>In ParCC</h3>
+<ol style="list-style-type: decimal">
+<li>Navigate to <strong>Convert &gt; HR -&gt; Probability &amp; NNT &gt;
+NNT/NNH</strong> tab.</li>
+<li>Select input mode: <strong>Two Probabilities</strong>.</li>
+<li>Enter Control = <strong>0.18</strong>, Intervention =
+<strong>0.12</strong>.</li>
+<li>Result: ARR = <strong>6.0%</strong>, NNT = <strong>17</strong>.</li>
+</ol>
+<p><strong>Interpretation:</strong> For every 17 patients treated with
+Drug X for 12 months, one additional death is prevented.</p>
+</div>
+<div id="other-input-modes" class="section level3">
+<h3>Other Input Modes</h3>
+<p>ParCC supports four ways to compute NNT:</p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="30%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input Mode</th>
+<th>You provide</th>
+<th>ParCC calculates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Direct ARR</td>
+<td>Absolute risk reduction</td>
+<td>NNT = ceil(1/ARR)</td>
+</tr>
+<tr class="even">
+<td>Two Probabilities</td>
+<td>Control &amp; intervention probabilities</td>
+<td>ARR, then NNT</td>
+</tr>
+<tr class="odd">
+<td>RR + Baseline</td>
+<td>Relative Risk + control probability</td>
+<td>ARR = p0 x (1 - RR), then NNT</td>
+</tr>
+<tr class="even">
+<td>OR + Baseline</td>
+<td>Odds Ratio + control probability</td>
+<td>Converts to probabilities via Zhang &amp; Yu, then NNT</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="nnt-vs-nnh" class="section level3">
+<h3>NNT vs NNH</h3>
+<p>When the intervention <em>increases</em> risk (ARR &lt; 0), the
+result is reported as <strong>NNH</strong> (Number Needed to Harm) with
+an orange warning. This happens when testing safety endpoints rather
+than efficacy.</p>
+</div>
+</div>
+<div id="when-to-use-these-tools" class="section level2">
+<h2>When to Use These Tools</h2>
+<ul>
+<li><strong>Log-rank -&gt; HR:</strong> Systematic reviews where older
+trials lack HR estimates; indirect treatment comparisons needing HR
+inputs from published statistics.</li>
+<li><strong>NNT Calculator:</strong> Communicating treatment effects to
+clinicians and formulary committees; sensitivity analyses varying NNT
+across plausible baseline risk ranges.</li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ol style="list-style-type: decimal">
+<li>Tierney JF, Stewart LA, Ghersi D, Burdett S, Sydes MR. Practical
+methods for incorporating summary time-to-event data into meta-analysis.
+<em>Trials</em>. 2007;8:16.</li>
+<li>Parmar MKB, Torri V, Stewart L. Extracting summary statistics to
+perform meta-analyses of the published literature for survival
+endpoints. <em>Statistics in Medicine</em>. 1998;17(24):2815-2834.</li>
+<li>Altman DG, Andersen PK. Calculating the number needed to treat for
+trials where the outcome is time to an event. <em>BMJ</em>.
+1999;319(7223):1492-1495.</li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
