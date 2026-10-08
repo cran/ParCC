@@ -147,9 +147,14 @@ mod_home_ui <- function(id) {
     fluidRow(
       column(12,
              div(class = "about-header",
-                 h1("ParCC v1.4", style = "font-weight: 700;"),
-                 p("Parameter Converter & Calculator for Health Economic Evaluation", style = "font-size: 1.2em; opacity: 0.9;"),
-                 p(style="font-size: 0.9em; margin-top: 10px;", "R Package Edition | RRC-HTA, AIIMS Bhopal")
+                 div(style = "display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap;",
+                   tags$img(src = "logo.png", alt = "ParCC logo", style = "height: 130px; flex-shrink: 0;"),
+                   div(style = "text-align: left;",
+                     h1("ParCC v1.4", style = "font-weight: 700; margin: 0;"),
+                     p("Parameter Converter & Calculator for Health Economic Evaluation", style = "font-size: 1.2em; opacity: 0.9; margin: 8px 0 0;"),
+                     p(style="font-size: 0.9em; margin-top: 6px; opacity: 0.8;", "R Package Edition | RRC-HTA, AIIMS Bhopal")
+                   )
+                 )
              )
       )
     ),
@@ -196,6 +201,15 @@ mod_home_ui <- function(id) {
                  h4("Start Your Analysis"),
                  p("Click any tool above, or jump straight in:"),
                  actionButton(ns("go_converters"), "Go to Convert", class = "btn-primary btn-lg", icon = icon("arrow-right"))
+             ),
+
+             # Session timeout warning
+             div(style = "background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 12px 18px; margin: 10px auto 30px; max-width: 800px; text-align: center;",
+                 icon("exclamation-triangle", style = "color: #856404; margin-right: 6px;"),
+                 tags$span(style = "color: #856404; font-size: 0.9em;",
+                   "Your session data (Lab Notebook) is stored in server memory. If the session times out due to inactivity, progress will be lost. ",
+                   tags$strong("Download your report before leaving the tool idle.")
+                 )
              )
       )
     )

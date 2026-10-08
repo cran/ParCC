@@ -1,11 +1,17 @@
 Package: ParCC
 Title: Parameter Converter and Calculator for Health Technology
         Assessment
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(
     person("Abhijit", "Pakhare", email = "drpakhare@gmail.com",
            role = c("aut", "cre")),
-    person("RRC-HTA Team, AIIMS Bhopal", role = "aut")
+    person("Soumya", "Jain", role = "aut"),
+    person("Anvita", "Malhotra", role = "aut"),
+    person("Shivansh", "Verma", role = "aut"),
+    person("Biju", "Somen", role = "aut"),
+    person("Oshima", "Sachin", role = "aut"),
+    person("Beena", "Joshi", role = "aut"),
+    person("Ankur", "Joshi", role = "aut")
     )
 Description: An interactive 'shiny' application for Health Technology
     Assessment (HTA) parameter estimation. Converts between rates,
@@ -34,9 +40,15 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Suggests: knitr, testthat (>= 3.0.0)
 NeedsCompilation: no
-Packaged: 2026-03-26 07:24:24 UTC; drpakhare
+Packaged: 2026-10-08 13:25:21 UTC; drpakhare
 Author: Abhijit Pakhare [aut, cre],
-  RRC-HTA Team, AIIMS Bhopal [aut]
+  Soumya Jain [aut],
+  Anvita Malhotra [aut],
+  Shivansh Verma [aut],
+  Biju Somen [aut],
+  Oshima Sachin [aut],
+  Beena Joshi [aut],
+  Ankur Joshi [aut]
 Maintainer: Abhijit Pakhare <drpakhare@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-03-30 18:30:07 UTC
+Date/Publication: 2026-10-08 13:40:02 UTC
